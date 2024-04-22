@@ -1,39 +1,35 @@
-const express = require('express')
-const fortune = require('./lib/fortune')
-const { engine } = require('express-handlebars')
+const express = require('express');
+// Const fortune = require('./lib/fortune');
+const handlers = require('./lib/handlers');
+const {engine} = require('express-handlebars');
 
-const app = express()
+const app = express();
 
 // Настройка механизма представлений Handlebars.
 app.engine('handlebars', engine({
-  defaultLayout: 'main',
-}))
+	defaultLayout: 'main',
+}));
 
-app.set('view engine', 'handlebars')
+app.set('view engine', 'handlebars');
 
+const port = process.env.PORT || 3000;
 
-const port = process.env.PORT || 3000
+app.use(express.static(__dirname + '/public'));
 
-app.use(express.static(__dirname + '/public'))
+app.get('/', handlers.home);
 
-app.get('/', (req, res) => res.render('home'))
-
-app.get('/about', (req, res) => {
-  res.render('about', { fortune: fortune.getFortune })
-})
-
+app.get('/about', handlers.about);
 
 // Пользовательская страница 404
-app.use((req, res) => {
-  res.status(404)
-  res.render('404')
-})
+app.use(handlers.notFound);
 
 // Пользовательская страница 500
-app.use((err, req, res, next) => {
-  console.error(err.message)
-  res.status(500)
-  res.render('500')
-})
+app.use(handlers.serverError);
 
-app.listen(port, () => console.log(`Express запущен на http://localhost:${port}; ` + 'нажмите Ctrl+C для завершения.'))
+if (require.main === module) {
+	app.listen(port, () => {
+		console.log(`Express запущен на http://localhost:${port}; нажмите Ctrl + C для завершения.`);
+	});
+} else {
+	module.exports = app;
+}
