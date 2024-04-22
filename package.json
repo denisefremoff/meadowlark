@@ -4,7 +4,7 @@
   "description": "test",
   "main": "meadowlark.js",
   "scripts": {
-    "test": "start"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,8 @@
   "dependencies": {
     "express": "^4.19.2",
     "express-handlebars": "^7.1.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
